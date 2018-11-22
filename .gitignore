@@ -112,6 +112,3 @@ venv.bak/
 
 # results
 *.csv
-
-# visualize
-visualize.py
