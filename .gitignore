@@ -109,3 +109,9 @@ venv.bak/
 
 # images
 *.png
+
+# results
+*.csv
+
+# visualize
+visualize.py
