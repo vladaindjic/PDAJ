@@ -12,7 +12,7 @@ def simulate_pendulum(theta_resolution, L1, L2, m1, m2, tmax, dt, results_path):
         csvwriter.writeheader()
 
         p = Pool()
-        results = p.map(solve, parameters_gen(L1, L2, m1, m1, tmax, dt, theta_resolution), chunksize=theta_resolution)
+        results = p.map(solve, parameters_gen(L1, L2, m1, m2, tmax, dt, theta_resolution), chunksize=theta_resolution)
         p.close()
 
         for theta1_init, theta2_init, theta1, theta2, x1, y1, x2, y2 in results:
