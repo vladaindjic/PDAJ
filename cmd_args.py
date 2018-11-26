@@ -91,6 +91,26 @@ def parse_arguments():
     return theta_resolution, L1, L2, m1, m2, tmax, dt, results_path
 
 
+def parse_args_visualize():
+    # Setup command line option parser
+    parser = argparse.ArgumentParser(
+        description='Double pendulum simulation '
+    )
+
+    parser.add_argument(
+        '-rpath',
+        '--results-path',
+        metavar='RESULTS PATH',
+        help="Path for results",
+        default="results.csv"
+    )
+
+    args = parser.parse_args()
+    results_path = args.results_path
+
+    return results_path
+
+
 def main():
     print parse_arguments()
 
