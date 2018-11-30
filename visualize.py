@@ -2,6 +2,8 @@ from math import sqrt
 import matplotlib.pyplot as plt
 import numpy as np
 
+import matplotlib.backends.backend_pdf
+
 # This import registers the 3D projection, but is otherwise unused.
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
@@ -17,6 +19,8 @@ cmaps = {
     'pcolor': 'RdBu',
     '3D': 'viridis'
 }
+
+FIGURE_SIZE = (11.7, 8.3) # In inches
 
 
 def read_results(path):
@@ -35,20 +39,20 @@ def visualize_parameter_pcolor(xx, yy, z, title, fig, position):
     fig.colorbar(im, ax=ax)
 
 
-def visualize_pcolor(xx, yy, x1, y1, x2, y2, theta1, theta2):
-    # visualize all parameters using pcolor
-    fig = plt.figure(1)
-
-    visualize_parameter_pcolor(xx, yy, x1, 'x1', fig, 321)
-    visualize_parameter_pcolor(xx, yy, y1, 'y1', fig, 322)
-    visualize_parameter_pcolor(xx, yy, x2, 'x2', fig, 323)
-    visualize_parameter_pcolor(xx, yy, y2, 'y2', fig, 324)
-    visualize_parameter_pcolor(xx, yy, theta1, 'theta1', fig, 325)
-    visualize_parameter_pcolor(xx, yy, theta2, 'theta2', fig, 326)
-    #
-    fig.tight_layout()
-
-    plt.savefig('results/pcolor.png')
+# def visualize_pcolor(xx, yy, x1, y1, x2, y2, theta1, theta2):
+#     # visualize all parameters using pcolor
+#     fig = plt.figure(1)
+#
+#     visualize_parameter_pcolor(xx, yy, x1, 'x1', fig, 321)
+#     visualize_parameter_pcolor(xx, yy, y1, 'y1', fig, 322)
+#     visualize_parameter_pcolor(xx, yy, x2, 'x2', fig, 323)
+#     visualize_parameter_pcolor(xx, yy, y2, 'y2', fig, 324)
+#     visualize_parameter_pcolor(xx, yy, theta1, 'theta1', fig, 325)
+#     visualize_parameter_pcolor(xx, yy, theta2, 'theta2', fig, 326)
+#     #
+#     fig.tight_layout()
+#
+#     plt.savefig('results/pcolor.png')
 
 
 def visualize_parameter_3D(xx, yy, z, title, fig, position):
@@ -65,23 +69,75 @@ def visualize_parameter_3D(xx, yy, z, title, fig, position):
     ax.set_zlabel(title, fontsize=fonts['label'])
 
 
-def visualize_3D(xx, yy, x1, y1, x2, y2, theta1, theta2):
-    # visualize parameters in 3D
-    fig = plt.figure(2, figsize=plt.figaspect(0.5))
+# def visualize_3D(xx, yy, x1, y1, x2, y2, theta1, theta2):
+#     # visualize parameters in 3D
+#     fig = plt.figure(2, figsize=plt.figaspect(0.5))
+#
+#     visualize_parameter_3D(xx, yy, x1, 'x1', fig, 321)
+#     visualize_parameter_3D(xx, yy, y1, 'y1', fig, 322)
+#     visualize_parameter_3D(xx, yy, x2, 'x2', fig, 323)
+#     visualize_parameter_3D(xx, yy, y2, 'y2', fig, 324)
+#     visualize_parameter_3D(xx, yy, theta1, 'theta1', fig, 325)
+#     visualize_parameter_3D(xx, yy, theta2, 'theta2', fig, 326)
+#     #
+#     fig.tight_layout()
+#
+#     plt.savefig('results/3D.png')
 
-    visualize_parameter_3D(xx, yy, x1, 'x1', fig, 321)
-    visualize_parameter_3D(xx, yy, y1, 'y1', fig, 322)
-    visualize_parameter_3D(xx, yy, x2, 'x2', fig, 323)
-    visualize_parameter_3D(xx, yy, y2, 'y2', fig, 324)
-    visualize_parameter_3D(xx, yy, theta1, 'theta1', fig, 325)
-    visualize_parameter_3D(xx, yy, theta2, 'theta2', fig, 326)
-    #
+
+def visualize_figure(xx, yy, x1, y1, x2, y2, theta1, theta2):
+    pdf = matplotlib.backends.backend_pdf.PdfPages("results/output.pdf")
+
+    # fig = plt.figure(1, figsize=plt.figaspect(0.5))
+    fig = plt.figure(1)
+
+    # x1
+    visualize_parameter_pcolor(xx, yy, x1, 'x1', fig, 221)
+    visualize_parameter_3D(xx, yy, x1, 'x1', fig, 222)
+    # y1
+    visualize_parameter_pcolor(xx, yy, y1, 'y1', fig, 223)
+    visualize_parameter_3D(xx, yy, y1, 'y1', fig, 224)
     fig.tight_layout()
+    # plt.savefig('results/tmp1.png')
+    pdf.savefig(fig)
 
-    plt.savefig('results/3D.png')
+    # fig = plt.figure(2, figsize=plt.figaspect(0.5))
+    fig = plt.figure(2)
+
+    # x1
+    visualize_parameter_pcolor(xx, yy, x2, 'x2', fig, 221)
+    visualize_parameter_3D(xx, yy, x2, 'x2', fig, 222)
+    # y1
+    visualize_parameter_pcolor(xx, yy, y2, 'y2', fig, 223)
+    visualize_parameter_3D(xx, yy, y2, 'y2', fig, 224)
+    fig.tight_layout()
+    # plt.savefig('results/tmp2.png')
+    pdf.savefig(fig)
+
+    # fig = plt.figure(3, figsize=plt.figaspect(0.5))
+    fig = plt.figure(3)
+
+    # x1
+    visualize_parameter_pcolor(xx, yy, theta1, 'theta1', fig, 221)
+    visualize_parameter_3D(xx, yy, theta1, 'theta1', fig, 222)
+    # y1
+    visualize_parameter_pcolor(xx, yy, theta2, 'theta2', fig, 223)
+    visualize_parameter_3D(xx, yy, theta2, 'theta2', fig, 224)
+    fig.tight_layout()
+    # plt.savefig('results/tmp3.png')
+    pdf.savefig(fig)
+    pdf.close()
+
+
 
 
 def visualize(results):
+    matplotlib.rc('figure',
+                  figsize=FIGURE_SIZE,
+                  titlesize='xx-large'
+                  )
+
+
     # set font for values on plot
     plt.rcParams.update({'font.size': fonts['plt']})
     # extracting parameters
@@ -102,9 +158,10 @@ def visualize(results):
     xx = np.reshape(x, (dim, dim))
     yy = np.reshape(y, (dim, dim))
     # create pcolor plot
-    visualize_pcolor(xx, yy, x1, y1, x2, y2, theta1, theta2)
+    # visualize_pcolor(xx, yy, x1, y1, x2, y2, theta1, theta2)
     # create 3D plot
-    visualize_3D(xx, yy, x1, y1, x2, y2, theta1, theta2)
+    # visualize_3D(xx, yy, x1, y1, x2, y2, theta1, theta2)
+    visualize_figure(xx, yy, x1, y1, x2, y2, theta1, theta2)
 
 
 def main():
