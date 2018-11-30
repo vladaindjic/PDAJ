@@ -1,8 +1,24 @@
 import csv
 from multiprocessing import Pool
 
-from calc import solve, parameters_gen
+from simple_plugins import AttrDict
+
+from calc import solve, y0_gen
 from cmd_args import parse_arguments
+
+
+def _init_pool(*data):
+    global _pool_data
+
+    data_keys = 'L1, L2, m1, m2, tmax, dt'.split(', ')
+    _pool_data = AttrDict(zip(data_keys, data))
+
+
+def _worker(args):
+    y0 = args
+    c = _pool_data
+
+    return solve(c.L1, c.L2, c.m1, c.m2, c.tmax, c.dt, y0)
 
 
 def simulate_pendulum(theta_resolution, L1, L2, m1, m2, tmax, dt, results_path):
@@ -11,8 +27,11 @@ def simulate_pendulum(theta_resolution, L1, L2, m1, m2, tmax, dt, results_path):
         csvwriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csvwriter.writeheader()
 
-        p = Pool()
-        results = p.map(solve, parameters_gen(L1, L2, m1, m2, tmax, dt, theta_resolution), chunksize=theta_resolution)
+        p = Pool(
+            initializer=_init_pool,
+            initargs=(L1, L2, m1, m2, tmax, dt),
+        )
+        results = p.map(_worker, y0_gen(theta_resolution), chunksize=theta_resolution)
         p.close()
 
         for theta1_init, theta2_init, theta1, theta2, x1, y1, x2, y2 in results:

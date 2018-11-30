@@ -1,7 +1,25 @@
 import csv
 
-from calc import parameters_gen, solve
+from calc import y0_gen, solve
 from cmd_args import parse_arguments
+
+from simple_plugins import AttrDict
+
+_pool_data = None
+
+
+def _init_pool(*data):
+    global _pool_data
+
+    data_keys = 'L1, L2, m1, m2, tmax, dt'.split(', ')
+    _pool_data = AttrDict(zip(data_keys, data))
+
+
+def _worker(args):
+    y0 = args
+    c = _pool_data
+
+    return solve(c.L1, c.L2, c.m1, c.m2, c.tmax, c.dt, y0)
 
 
 def simulate_pendulum(theta_resolution, L1, L2, m1, m2, tmax, dt, results_path):
@@ -10,7 +28,9 @@ def simulate_pendulum(theta_resolution, L1, L2, m1, m2, tmax, dt, results_path):
         csvwriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
         csvwriter.writeheader()
 
-        results = map(solve, parameters_gen(L1, L2, m1, m2, tmax, dt, theta_resolution))
+        _init_pool(L1, L2, m1, m2, tmax, dt)
+
+        results = map(_worker, y0_gen(theta_resolution))
 
         for theta1_init, theta2_init, theta1, theta2, x1, y1, x2, y2 in results:
             csvwriter.writerow({'theta1_init': theta1_init,

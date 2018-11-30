@@ -20,8 +20,7 @@ def deriv(y, t, L1, L2, m1, m2):
     return theta1dot, z1dot, theta2dot, z2dot
 
 
-def solve(arg_tuples):
-    L1, L2, m1, m2, tmax, dt, y0 = arg_tuples
+def solve(L1, L2, m1, m2, tmax, dt, y0):
     theta1_init, theta2_init = y0[0], y0[2]
 
     t = np.arange(0, tmax + dt, dt)
@@ -50,8 +49,3 @@ def y0_gen(theta_resolution):
                 0.0
             ])
             yield y0
-
-
-def parameters_gen(L1, L2, m1, m2, tmax, dt, theta_resolution):
-    for y0 in y0_gen(theta_resolution):
-        yield L1, L2, m1, m2, tmax, dt, y0
